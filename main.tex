@@ -1,0 +1,193 @@
+% ===========================================================================================
+% This is an example LaTeX file that uses the custom "bunne" beamer theme
+%
+% @author pmrobbe
+% @date 09/14/23
+
+\documentclass[aspectratio=169, 12pt, t]{beamer}
+
+% ===========================================================================================
+% Title, date and authors
+
+% A title that spans multiple lines
+\title{An extremely long title that \\ doesn't fit on a single line}
+
+% Use the institute command to add conference name and date, location, ...
+\institute{Some awesome conference}
+
+% Authors and affiliations in a tabular environment
+\author{%
+    \hspace{-5pt}%
+    \begin{tabular}{ccc}
+        Author One   & 
+        Author Two   & 
+        Author Three \\
+        \includegraphics[height=1.2cm]{plt/AffiliationOne} &
+        \includegraphics[height=1.2cm]{plt/AffiliationTwo} &
+        \includegraphics[height=1.2cm]{plt/AffiliationThree} \\
+    \end{tabular}
+}
+
+% ===========================================================================================
+% Select beamer style
+\usepackage{theme/beamerthemebunne}
+
+% ===========================================================================================
+% Preamble
+
+% With this option, only equations that are references in the text get a label
+\usepackage{mathtools}
+    \mathtoolsset{showonlyrefs}
+
+% We need this for a good looking arrow head
+\usetikzlibrary{arrows.meta}
+
+% By default all math in TikZ nodes are set in inline mode
+% This line avoids that we have to pput \displaystyle before every equation
+\everymath{\displaystyle}
+
+% ===========================================================================================
+% Contents begins here
+\begin{document}
+
+% ===========================================================================================
+% Title slide
+\titleslide{%
+}
+
+% ===========================================================================================
+% Funding slide
+% \fundingslide{%
+% }
+
+% ===========================================================================================
+% Section: Introduction
+\section{Introduction}
+
+\outlineslide{currentsection, hidesubsections}
+
+\begin{frame}
+    \frametitle{Credit}
+    This is a \texttt{beamer} theme inspired by the slides for the ICML 2023 tutorial on \emph{Optimal Transport in Learning, Control, and Dynamical Systems} by C. Bunne and M. Cuturi, available at
+    \begin{center}
+        \url{https://icml.cc/virtual/2023/tutorial/21559}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Key features}
+    \begin{coloreditemize}
+        \item A colored label on the top right indicating the section number, cycling automatically between \tikz{\node[fill=color1!50] {};}, \tikz{\node[fill=color2!50] {};} and \tikz{\node[fill=color3!50] {};}
+        \item Corresponding coloring of \texttt{item}'s in \texttt{itemize} and \texttt{enumerate} environments
+        \item Outline slides with custom highlighting
+        \item Special math highlighting, e.g.,
+        \begin{equation}
+                \hlmath{color3!30}{\int_a^bf(x)dx = \lim_{n\rightarrow\infty} \sum_{j=1}^{n} f(x_j) \hlmath{color1!50}{\Delta x_j}}
+        \end{equation}
+        \item A custom citation style~\cite{verdu2017individual}
+    \end{coloreditemize}
+\end{frame}
+
+% ===========================================================================================
+% Section: Main usage
+\section{Main usage}
+
+\outlineslide{currentsection, hideothersubsections}
+
+\subsection{Colored itemizations and enumarations}
+
+\begin{frame}
+    \frametitle{Unnumbered lists}
+    Here's an example of a bullet list with \texttt{itemize}
+    \begin{itemize}
+        \item This is the first bullet
+        \item This is the second bullet
+        \begin{itemize}
+            \item This is a subbullet
+            \begin{itemize}
+                \item This is a subsubbullet
+            \end{itemize}
+        \end{itemize}
+        \item This is the third bullet
+    \end{itemize}
+    \hl{color3!30}{%
+        Use \texttt{coloreditemize} to create colored bullet lists
+        \begin{coloreditemize}
+            \item This is the first bullet
+            \item This is the second bullet
+        \end{coloreditemize}
+    }
+\end{frame}
+
+\begin{frame}[t]
+    \frametitle{Numbered lists}
+    Use \texttt{enumerate} for numbered lists
+    \begin{enumerate}
+        \item This is the first item
+        \item This is the second item
+        \item This is the third item
+    \end{enumerate}
+    The background color of the \texttt{item} changes depending on the section number\\[\baselineskip]
+    A nested numbered and unnumbered list
+    \begin{enumerate}
+        \item This is the first item
+        \begin{coloreditemize}
+            \item This is a first subbullet
+            \item This is a second subbullet
+        \end{coloreditemize}
+        \item This is the second item
+    \end{enumerate}
+\end{frame}
+
+\subsection{Outline slides}
+
+\begin{frame}[fragile]
+    \frametitle{Outline slides}
+    To add an outline slide, use \verb!\outlineslide{<options>}! \\[\baselineskip]
+    \textbf{Note}: \verb!<options>! will be passed on to \verb!\tableofcontents[<options>]{}!, so to add an outline slide which highlights the current section, you can use \verb!\outlineslide{currentsection, hideothersubsections}!
+\end{frame}
+
+\subsection{Highlighting math}
+
+\begin{frame}[fragile]
+    \frametitle{Highlighting math}
+    To highlight math, use the \verb!\hlmath{<color>}{<math>}! command
+    \vskip10ex%
+    \begin{flushright}
+        \begin{minipage}{0.5\textwidth}
+            \begin{equation}
+                \displaystyle\hlmath{color3!20}{T^\star = \underset{T:T_\#\mu\approx\nu}{\mathrm{argmin}} \int_{\mathbb{R}^d}\|x - \tikz[remember picture]{\coordinate (T);}\hlmath{color1!50}{T}(x)\|_2^2d\mu(x)\tikz[remember picture]{\coordinate (n);}}
+            \end{equation}
+            \begin{tikzpicture}[remember picture, overlay]
+                \node[anchor=east] (euclid) at ([yshift=7ex]n) {Euclidean distance as transport cost};
+                \coordinate (begin) at (euclid.351);
+                \coordinate (end) at ([yshift=-3ex]begin);
+                \draw[very thick, ->, >={Stealth[length=2mm, width=1.75mm]}] (begin) -- (end);
+            \end{tikzpicture}
+        \begin{tikzpicture}[remember picture, overlay]
+            \draw[draw=color1, very thick] ([yshift=-.5ex]T) -- ++(-0.75, -0.75) -- node[pos=1, anchor=south west] {\textcolor{color1}{\textbf{Approach:}} learn $T$} ++(-10.25, 0);
+        \end{tikzpicture}
+        \end{minipage}%
+    \end{flushright}
+\end{frame}
+
+% ===========================================================================================
+% Section: Conclusion
+\section{Conclusion}
+
+\outlineslide{currentsection, hideothersubsections}
+
+\begin{frame}
+    \frametitle{Adding citations}
+    \begin{enumerate}
+        \item At the end of nineteenth century, approximately thirty nearly complete skeletons of the ornithopod dinosaur Iguanodon bernissartensis were discovered in Lower Cretaceous deposits in Bernissart (Belgium)~\cite{verdu2017individual}
+        \item People simply do not know everything about everything. There are holes in their knowledge, gaps in their expertise \cite{dunning2011dunning}
+        \item The lithologies of rocks along Pfeiffer Beach are typically Franciscan, consisting of sandstone, siltstone, mudstone, shale, conglomerate, greenstone, and chert \cite{underwood1977pfeiffer}
+    \end{enumerate}
+\end{frame}
+
+% ===========================================================================================
+% References
+\bibliographyslide{}
+
+\end{document}

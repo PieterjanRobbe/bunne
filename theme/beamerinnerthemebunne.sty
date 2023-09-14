@@ -1,0 +1,159 @@
+\mode<presentation>
+
+% Highlighting
+\tcbset{%
+    colored box/.style={%
+        boxrule=0.8pt, size=fbox, arc=3pt
+    }
+}
+
+\newcommand*{\hlmath}[1]{\tcboxmath[colored box, colback=#1, colframe=#1]}
+
+\newcommand\hl[2]{%
+	\begin{tcolorbox}[colored box, boxsep=1ex, colback=#1, colframe=#1]%
+		#2
+	\end{tcolorbox}%
+}
+
+% Command to show title slide and TOC
+\newcommand{\titleslide}{%
+	{% see https://tex.stackexchange.com/questions/471683/beamer-locally-change-frametitle
+	\setbeamertemplate{footline}{} 
+	\begin{frame}[noframenumbering]
+		\titlepage{}
+	\end{frame}
+	}
+}
+
+% Command to show outline slide
+\newcommand{\outlineslide}[1]{%
+	{% see https://tex.stackexchange.com/questions/471683/beamer-locally-change-frametitle
+	\setbeamertemplate{footline}{} 
+	\begin{frame}[noframenumbering]
+		\frametitle{Outline}
+		\tableofcontents[#1]{}
+	\end{frame}
+	}
+}
+
+% Command to show bibliography slide
+\newcommand{\bibliographyslide}[1]{%
+	{% see https://tex.stackexchange.com/questions/471683/beamer-locally-change-frametitle
+	\setbeamertemplate{footline}{} 
+	\begin{frame}[noframenumbering, allowframebreaks]
+		\frametitle{References}
+		\bibliographystyle{theme/bunne}
+		\bibliography{references}
+	\end{frame}
+	}
+}
+
+% Options for table of contents
+\setbeamertemplate{section in toc shaded}[default][100]
+
+\setbeamertemplate{section in toc}{%
+	\hypersetup{linkcolor=black}
+	\hskip-5ex
+	\raisebox{-2mm}{%
+		\pgfmathparse{mod(\inserttocsectionnumber, 3) == 1 ? "color1" : (mod(\inserttocsectionnumber, 3) == 2 ? "color2" : "color3")}
+		\edef\sectioncolor{\pgfmathresult}
+		\begin{tikzpicture}[%
+				label/.style = {anchor=west, draw=none, fill=\sectioncolor!50, inner sep=3pt},
+			]
+			% Dummy label with rectanguler corners
+			\node[label] {%
+				\usebeamerfont{label in toc}%
+				\usebeamercolor[fg]{label in toc}%
+				\strut\;\;\;
+			};
+			% The actual label
+			\node[label, rounded corners=6pt] (label) {%
+				\usebeamerfont{label in toc}%
+				\usebeamercolor[fg]{label in toc}%
+				\strut{}\;Part \inserttocsectionnumber\;\;\strut%
+			};
+		\end{tikzpicture}%
+	}%
+	\kern1ex\ifnum\thesection=\inserttocsectionnumber\textbf{\inserttocsection}\relax\else\inserttocsection\fi\par
+}
+
+\setbeamertemplate{subsection in toc}{%
+	\hypersetup{linkcolor=black}
+	\kern1ex\hskip4ex\raisebox{0.25ex}{\tiny\ding{108}}\;\;\inserttocsubsection\par
+}
+
+% Enumerate
+\setbeamertemplate{enumerate item}{
+    \pgfmathparse{mod(\thesection, 3) == 1 ? "color1" : (mod(\thesection, 3) == 2 ? "color2" : "color3")}
+    \edef\sectioncolor{\pgfmathresult}%
+    \raisebox{-0.25ex}{%
+    \begin{tikzpicture}[
+            every node/.style={fill=\sectioncolor, draw=none, rounded corners=0.5ex, inner sep=2.5pt}
+        ]
+        \node[] {\color{bg}\footnotesize\insertenumlabel};
+    \end{tikzpicture}%
+    }%
+}
+
+% Itemize
+\setbeamertemplate{itemize item}{\raisebox{0.25ex}{\tiny\ding{108}}}
+\setbeamertemplate{itemize subitem}{\raisebox{0.25ex}{\tiny\ding{108}}}
+\setbeamertemplate{itemize subsubitem}{\raisebox{0.25ex}{\tiny\ding{108}}}
+\setbeamertemplate{itemize/enumerate body begin}{\normalsize}
+\setbeamertemplate{itemize/enumerate subbody begin}{\normalsize}
+\setbeamertemplate{itemize/enumerate subbody end}{}
+\setbeamertemplate{itemize/enumerate subsubbody begin}{\normalsize}
+\setbeamertemplate{itemize/enumerate subsubbody end}{}
+
+% Colored itemize environments
+\newenvironment{coloreditemize}[1][]{%
+	% get sectioncolor
+	\pgfmathparse{mod(\thesection, 3) == 1 ? "color1" : (mod(\thesection, 3) == 2 ? "color2" : "color3")}
+	% set color to sectioncolor if argument 1 is not provided
+	\edef\sectioncolor{\if\relax\detokenize{#1}\relax\pgfmathresult\else#1\fi}
+	% change color itemize colors
+	\setbeamercolor*{item}{fg=\sectioncolor}
+	% change nested itemize colors
+	\setbeamercolor*{subitem}{fg=\sectioncolor}
+	\setbeamercolor*{subsubitem}{fg=\sectioncolor}
+	\begin{itemize}
+}
+{%
+	\end{itemize}
+}
+
+% Bibliography
+\setbeamertemplate{frametitle continuation}[from second]
+\setbeamertemplate{bibliography entry article}{}
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry location}{}
+\setbeamertemplate{bibliography entry note}{}
+\setbeamerfont{bibliography item}{size=\footnotesize}
+\setbeamerfont{bibliography entry author}{size=\footnotesize}
+\setbeamerfont{bibliography entry title}{size=\footnotesize}
+\setbeamerfont{bibliography entry location}{size=\footnotesize}
+\setbeamerfont{bibliography entry note}{size=\footnotesize}
+\setbeamercolor*{bibliography entry title}{fg=black}
+\setbeamercolor*{bibliography entry author}{fg=black}
+\setbeamercolor*{bibliography entry location}{fg=black}
+\setbeamercolor*{bibliography entry note}{fg=black}
+\setbeamertemplate{bibliography item}{\raisebox{1pt}{\colorbox{color1}{\color{white}\tiny\theenumiv}}}
+\setbeamertemplate{bibliography item}{%
+	\hskip-3.6ex\begin{tikzpicture}[scale=0.6]
+        \node[] at (0, 1) {};
+        \node[] at (0.75, 1) {};
+        \begin{scope}[overlay]
+            \draw[semithick, rounded corners=2pt] (1, 0.8) -- (1, 0) -- (0, 0) -- (0, 1.2) -- (0.7, 1.2);
+            \fill[draw, semithick, rounded corners=2pt, fill=black!10] (1, 0.8) -- (0.7, 0.8) -- (0.7, 1.2);
+            \draw[semithick] (0.7, 1.2) -- (1, 0.8);
+            \foreach \y in {0.2, 0.4, 0.6}{
+                \draw (0.2, \y) -- (0.8, \y);
+                \draw (0.2, 0.8) -- (0.6, 0.8);
+                \draw (0.2, 1) -- (0.6, 1);
+            }
+        \end{scope}%
+    \end{tikzpicture}\hskip1ex%
+}
+
+\mode
+<all>

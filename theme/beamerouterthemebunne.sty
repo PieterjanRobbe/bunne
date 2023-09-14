@@ -1,0 +1,77 @@
+\mode<presentation>
+
+% Title page
+\defbeamertemplate*{title page}{bunne}[1][]{%
+	\begin{tikzpicture}[
+			title/.style     = {anchor=west, text width=0.9\paperwidth},
+			institute/.style = {anchor=west},
+			author/.style    = {anchor=west}
+		]
+		\useasboundingbox (0, 0) rectangle (\the\paperwidth, \the\paperheight);
+		\coordinate (title) at (0, 0.8\paperheight);
+		\coordinate (author) at (0, 0.2\paperheight);
+		\coordinate (institute) at ($(title)!0.5!(author)$);
+		\node[title]     at (title) {%
+			\usebeamerfont{title}\inserttitle\par
+		};
+		\node[institute] at (institute) {%
+			\usebeamerfont{institute}\insertinstitute\par
+		};
+		\node[author]    at (author) {%
+			\usebeamerfont{author}\insertauthor\par
+		};
+	\end{tikzpicture}
+}
+
+% Disable default footer
+\setbeamertemplate{navigation symbols}{}
+
+% Add custom footer with page numbers
+\setbeamertemplate{footline}{%
+
+	\begin{tikzpicture}[remember picture, overlay, inner sep=6pt]
+		\ifnum\thepage>1\relax% Do not add page numbers on title slide
+			\node[anchor=south west] at (current page.south west) {\insertframenumber{}/\inserttotalframenumber{}};
+		\fi
+	\end{tikzpicture}
+}
+
+% Disable default header
+\setbeamertemplate{headline}{}
+
+% Custom frame title
+\setbeamertemplate{frametitle}{%
+	\begin{beamercolorbox}[wd=\paperwidth]{frametitle}%
+		% Added manual adjustment to the frame title positioning
+		\hskip1.25ex%
+		\usebeamerfont{frametitle}%
+		\usebeamercolor[fg]{frametitle}%
+		\strut\insertframetitle\strut%
+		\hfill%
+		% This is where we add the label on the right
+		\ifbeamertemplateempty{footline}{}{%
+			\raisebox{-2mm}{%
+				\pgfmathparse{mod(\thesection, 3) == 1 ? "color1" : (mod(\thesection, 3) == 2 ? "color2" : "color3")}
+				\edef\sectioncolor{\pgfmathresult}
+				\begin{tikzpicture}[%
+						label/.style = {anchor=east, draw=none, fill=\sectioncolor!50, inner sep=3pt},
+					]
+					% Dummy label with rectanguler corners
+					\node[label] {%
+						\usebeamerfont{label}%
+						\usebeamercolor[fg]{label}%
+						\strut\;\;\;
+					};
+					% The actual label
+					\node[label, rounded corners=6pt] (label) {%
+						\usebeamerfont{label}%
+						\usebeamercolor[fg]{label}%
+						\strut{}\;Part \thesection\;\;\strut%
+					};
+				\end{tikzpicture}%
+			}%
+		}
+	\end{beamercolorbox}
+}
+
+\mode<all>
